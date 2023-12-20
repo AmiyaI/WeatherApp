@@ -1,0 +1,66 @@
+# Terraform ignore rules (adjusted for Terraform subfolder)
+Terraform/**/*.terraform/*
+Terraform/*.tfstate
+Terraform/*.tfstate.*
+Terraform/*.tfvars
+Terraform/*.tfvars.json
+Terraform/*.auto.tfvars
+Terraform/*.auto.tfvars.json
+Terraform/crash.log
+Terraform/override.tf
+Terraform/override.tf.json
+Terraform/*.tfplan
+Terraform/*.tfschema
+
+# Ignore local workspace files
+.terraformrc
+terraform.rc
+
+# Ignore sensitive data and environment files
+secrets/
+.env
+*.pem
+
+# Python ignore rules
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+db.sqlite3
+.ipynb_checkpoints
+
+# Ignore compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Ignore Packaging
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Ignore logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore specific folders
+old files/
