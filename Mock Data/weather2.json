@@ -1,0 +1,18 @@
+{
+    "weather_data": [
+        {
+            "time": "2023-12-08T10:00:00Z",
+            "temperature": 65,
+            "humidity": 60,
+            "wind_speed": 8,
+            "condition": "Cloudy"
+        },
+        {
+            "time": "2023-12-08T11:00:00Z",
+            "temperature": 68,
+            "humidity": 55,
+            "wind_speed": 7,
+            "condition": "Overcast"
+        }
+    ]
+}

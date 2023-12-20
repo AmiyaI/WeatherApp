@@ -1,0 +1,18 @@
+{
+    "weather_data": [
+        {
+            "time": "2023-12-08T14:00:00Z",
+            "temperature": 92,
+            "humidity": 85,
+            "wind_speed": 4,
+            "condition": "Hot and Humid"
+        },
+        {
+            "time": "2023-12-08T15:00:00Z",
+            "temperature": 95,
+            "humidity": 90,
+            "wind_speed": 3,
+            "condition": "Extremely Hot"
+        }
+    ]
+}
