@@ -42,7 +42,7 @@ variable "my_ip" {
 }
 
 variable "panera_ip" {
-  description = "Blacksburg Panera Bread IP"
+  description = "Panera Bread IP" #For when working at Panera
   type        = string
   default     = ""
 }
