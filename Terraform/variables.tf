@@ -42,7 +42,18 @@ variable "my_ip" {
 }
 
 variable "panera_ip" {
-  description = "Blacksburg Panera Bread IP"
+  description = "Panera Bread IP" #For when working at Panera
   type        = string
   default     = ""
+}
+
+
+variable "s3dataingest_image_uri" {
+  description = "Docker image URI for s3dataingest Lambda function"
+  type        = string
+}
+
+variable "initialize_db_image_uri" {
+  description = "Docker image URI for initialize_db Lambda function"
+  type        = string
 }

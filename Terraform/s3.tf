@@ -50,6 +50,45 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
 
 
+# S3 Bucket Configuration for Terraform State (Remote Backend)
+resource "aws_s3_bucket" "terraform_state" {
+  bucket = "my-terraform-state-bucket-weatherapp" # Replace with a unique name for your Terraform state bucket
+
+  tags = {
+    Name = "TerraformStateBucket"
+  }
+}
+
+# Enable Versioning for the Terraform State S3 Bucket
+resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
+  bucket = aws_s3_bucket.terraform_state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Server-Side Encryption Configuration for the Terraform State S3 Bucket
+resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state_sse_configuration" {
+  bucket = aws_s3_bucket.terraform_state.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+# Public access block settings for the Terraform State bucket
+resource "aws_s3_bucket_public_access_block" "terraform_state_public_access_block" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+
 /* Not in use - used docker images with ecr instead of using zip files for lambda functions
 resource "aws_s3_bucket" "lambda_code" {
   bucket = "weather-app-lambda-code-bucket"

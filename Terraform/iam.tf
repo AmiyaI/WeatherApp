@@ -191,3 +191,41 @@ data "aws_iam_policy_document" "lambda_vpc_access_policy" {
   }
 }
 
+
+# ---------------------------------------------------
+# IAM Policy Document for S3 Remote Backend 
+# ---------------------------------------------------
+resource "aws_iam_policy" "terraform_backend_access" {
+  name        = "TerraformBackendAccess"
+  path        = "/"
+  description = "Policy to allow Terraform to access S3 bucket and DynamoDB table for state management"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action   = ["s3:ListBucket"],
+        Effect   = "Allow",
+        Resource = ["arn:aws:s3:::my-terraform-state-bucket-weatherapp"]
+      },
+      {
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
+        ],
+        Effect   = "Allow",
+        Resource = ["arn:aws:s3:::my-terraform-state-bucket-weatherapp/state/*"]
+      },
+      {
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem"
+        ],
+        Effect   = "Allow",
+        Resource = ["arn:aws:dynamodb:*:*:table/terraform-up-and-run-locks"]
+      }
+    ]
+  })
+}

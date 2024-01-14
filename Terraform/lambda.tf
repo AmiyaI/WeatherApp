@@ -8,7 +8,7 @@ resource "aws_lambda_function" "weather_processor" {
   role = aws_iam_role.lambda_exec_role.arn # IAM role for Lambda execution
 
   package_type = "Image"
-  image_uri    = "004678516606.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:s3dataingest"
+  image_uri    = var.s3dataingest_image_uri
   timeout      = 30
   /*
   s3_bucket = aws_s3_bucket.lambda_code.bucket
@@ -45,7 +45,7 @@ resource "aws_lambda_function" "db_initializer" {
   role = aws_iam_role.lambda_exec_role.arn # IAM role for Lambda execution
 
   package_type = "Image"
-  image_uri    = "004678516606.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:initialize_db"
+  image_uri    = var.initialize_db_image_uri
   /*
   s3_bucket = aws_s3_bucket.lambda_code.bucket
   s3_key    = "initialize_db.zip"

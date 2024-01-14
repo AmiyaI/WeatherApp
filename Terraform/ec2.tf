@@ -1,5 +1,5 @@
 /*
-# Fetch the latest Amazon Linux AMI - community made
+# Fetch the latest Amazon Linux AMI 
 data "aws_ssm_parameter" "amazon_linux_2023" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-minimal-kernel-default-x86_64"
 }
@@ -45,9 +45,29 @@ resource "aws_instance" "jenkins" {
     systemctl enable docker
     usermod -aG docker ec2-user
 
+    # Create mount directory for Jenkins
+    mkdir -p /mnt/jenkins_home
+
+    # Check if /dev/xvdh has a file system and format if it doesn't
+    FS_TYPE=$(file -s /dev/xvdh | cut -d , -f 1 | awk '{ print $2 }')
+    if [ "$FS_TYPE" == "data" ]; then
+        # No file system, so format the volume as ext4
+        mkfs -t ext4 /dev/xvdh
+    fi
+
+    # Mount EBS volume to a local path
+    mount /dev/xvdh /mnt/jenkins_home
+
+    # Make the mount persist across reboots
+    echo '/dev/xvdh /mnt/jenkins_home ext4 defaults,nofail 0 2' >> /etc/fstab
+
+    # Correct permissions for Jenkins
+    chown -R 1000:1000 /mnt/jenkins_home
+    chmod -R 755 /mnt/jenkins_home
+
     # Pull Jenkins Docker Image and run it
     docker pull jenkins/jenkins:lts
-    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
 
     # Install common utilities
     yum install -y jq git unzip
@@ -69,6 +89,27 @@ resource "aws_eip" "jenkins_eip" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+#EBS Volume for Jenkins EC2 Instance
+resource "aws_ebs_volume" "jenkins_data" {
+  availability_zone = aws_instance.jenkins.availability_zone
+  size              = 10
+  type              = "gp3" # General purpose SSD
+  # snapshot_id       = "snap-06e7da529671e440c"
+  lifecycle {
+    prevent_destroy = true
+  }
+  tags = {
+    Name = "JenkinsData"
+  }
+}
+#EBS Volume Attachment
+resource "aws_volume_attachment" "jenkins_ebs_attach" {
+  device_name  = "/dev/sdh" # or xvdf or another appropriate device name, still shows up as xvdh instead of /dev/sdh
+  volume_id    = aws_ebs_volume.jenkins_data.id
+  instance_id  = aws_instance.jenkins.id
+  force_detach = true
 }
 
 # Jenkins Security Group Configuration
