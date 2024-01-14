@@ -1,7 +1,8 @@
 # test_initialize_db.py
-
+import sys
 import unittest
 from unittest.mock import patch, MagicMock
+sys.path.append('../Lambda Functions/lambda_function1')
 from initialize_db import lambda_handler
 
 class InitializeDBTestCase(unittest.TestCase):

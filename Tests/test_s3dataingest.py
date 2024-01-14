@@ -1,7 +1,8 @@
 # test_s3dataingest.py
-
+import sys
 import unittest
 from unittest.mock import patch
+sys.path.append('../Lambda Functions/lambda_function2')
 from s3dataingest import lambda_handler
 
 class S3DataIngestTestCase(unittest.TestCase):
