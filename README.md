@@ -103,3 +103,10 @@ This project demonstrates an Automated Weather Data Processing and Analytics Pla
 ## Conclusion
 
 This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
+# WeatherApp
+Automated Weather Data Processing and Analytics Platform with CI/CD on AWS
+
+
+
+
+Jenkins Pipeline and README.md still in progress
