@@ -1,8 +1,8 @@
 pipeline {
-    agent any
+    agent any // Use any available agent
 
     environment {
-        // Define your environment variables here
+        // Define environment variables for the pipeline
         AWS_DEFAULT_REGION = 'us-east-1'
         ECR_REPO_URI = '004678516606.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo'
     }
@@ -10,14 +10,22 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Checks out the source code
+                // Checkout the source code from the repository
+                checkout scm
             }
         }
 
         stage('Unit Test') {
+            agent {
+                // Use a Docker agent with Python for running unit tests
+                docker {
+                    image 'python:3.9'
+                    args '-u root:root'
+                }
+            }
             steps {
-                sh 'echo "Running unit tests"'
-                // Run unit tests command here
+                echo "Running unit tests"
+                // Execute unit tests
                 sh 'python -m unittest discover -s Tests'
             }
         }
@@ -25,18 +33,19 @@ pipeline {
         stage('Build and Push Docker Images') {
             steps {
                 script {
+                    // Use stored AWS credentials for ECR authentication
                     withCredentials([usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'AWS_CREDENTIALS_ID']) {
                         // Authenticate with ECR
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}"
                         
-                        // Building and pushing the first lambda function - initialize_db
+                        // Build and push the initialize_db Docker image
                         sh """
                         docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
                         docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
                         docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
                         """
 
-                        // Building and pushing the second lambda function - s3dataingest
+                        // Build and push the s3dataingest Docker image
                         sh """
                         docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
                         docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
@@ -49,9 +58,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'echo "Deploying using Terraform"'
+                echo "Deploying using Terraform"
                 script {
-                    // Initialize Terraform and apply
+                    // Change directory to Terraform configuration and execute deployment
                     sh """
                     cd terraform
                     terraform init
@@ -65,6 +74,7 @@ pipeline {
     }
 
     post {
+        // Define post-build actions
         always {
             echo 'This will always run'
         }
