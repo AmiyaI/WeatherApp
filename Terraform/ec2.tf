@@ -21,10 +21,10 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Jenkins EC2 Instance Configuration
 resource "aws_instance" "jenkins" {
-  ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = var.instance_type
-  key_name      = "JasonBourne"
-  subnet_id     = aws_subnet.public-1.id
+  ami             = data.aws_ami.amazon_linux_2023.id
+  instance_type   = var.instance_type
+  key_name        = "JasonBourne"
+  subnet_id       = aws_subnet.public-1.id
   #security_groups = [aws_security_group.jenkins_sg.id]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   tags = {
@@ -65,9 +65,10 @@ resource "aws_instance" "jenkins" {
     chown -R 1000:1000 /mnt/jenkins_home
     chmod -R 755 /mnt/jenkins_home
 
-    # Pull Jenkins Docker Image and run it
+    # Pull Jenkins Docker Image and run it with Docker socket mounted
     docker pull jenkins/jenkins:lts
-    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+    # docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home jenkins/jenkins:lts - for without socket mounted
+    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
 
     # Install common utilities
     yum install -y jq git unzip

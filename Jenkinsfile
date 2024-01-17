@@ -20,15 +20,16 @@ pipeline {
                 // Use Docker-in-Docker for running unit tests
                 docker {
                     image 'docker:dind' // Docker-in-Docker image
-                    args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount the host's Docker socket
+                    args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' // Mount the host's Docker socket
                 }
             }
             steps {
                 echo "Running unit tests"
-                // Pull Python Docker image for running tests
-                sh 'docker pull python:3.11'
                 // Execute unit tests within the Python Docker container
-                sh 'docker run --rm -v $WORKSPACE:/workspace -w /workspace python:3.11 python -m unittest discover -s Tests'
+                sh '''
+                    docker pull python:3.11
+                    docker run --rm -v $WORKSPACE:/workspace -w /workspace python:3.11 python -m unittest discover -s Tests
+                '''
             }
         }
 
@@ -40,19 +41,16 @@ pipeline {
                         // Authenticate with ECR
                         sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}"
                         
-                        // Build and push the initialize_db Docker image
-                        sh """
-                        docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
-                        docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
-                        docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
-                        """
-
-                        // Build and push the s3dataingest Docker image
-                        sh """
-                        docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
-                        docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                        docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                        """
+                        // Build and push the Docker images
+                        sh '''
+                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
+                            docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+                            docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+                            
+                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
+                            docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                            docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                        '''
                     }
                 }
             }
@@ -63,13 +61,13 @@ pipeline {
                 echo "Deploying using Terraform"
                 script {
                     // Change directory to Terraform configuration and execute deployment
-                    sh """
-                    cd terraform
-                    terraform init
-                    terraform apply -auto-approve \
-                        -var 's3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}' \
-                        -var 'initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}'
-                    """
+                    sh '''
+                        cd terraform
+                        terraform init
+                        terraform apply -auto-approve \
+                            -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
+                            -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}"
+                    '''
                 }
             }
         }
