@@ -17,16 +17,18 @@ pipeline {
 
         stage('Unit Test') {
             agent {
-                // Use a Docker agent with Python for running unit tests
+                // Use Docker-in-Docker for running unit tests
                 docker {
-                    image 'python:3.9'
-                    args '-u root:root'
+                    image 'docker:dind' // Docker-in-Docker image
+                    args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount the host's Docker socket
                 }
             }
             steps {
                 echo "Running unit tests"
-                // Execute unit tests
-                sh 'python -m unittest discover -s Tests'
+                // Pull Python Docker image for running tests
+                sh 'docker pull python:3.11'
+                // Execute unit tests within the Python Docker container
+                sh 'docker run --rm -v $WORKSPACE:/workspace -w /workspace python:3.11 python -m unittest discover -s Tests'
             }
         }
 
