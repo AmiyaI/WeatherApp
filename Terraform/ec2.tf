@@ -21,10 +21,10 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Jenkins EC2 Instance Configuration
 resource "aws_instance" "jenkins" {
-  ami             = data.aws_ami.amazon_linux_2023.id
-  instance_type   = var.instance_type
-  key_name        = "JasonBourne"
-  subnet_id       = aws_subnet.public-1.id
+  ami           = data.aws_ami.amazon_linux_2023.id
+  instance_type = var.instance_type
+  key_name      = "JasonBourne"
+  subnet_id     = aws_subnet.public-1.id
   #security_groups = [aws_security_group.jenkins_sg.id]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   tags = {
@@ -67,8 +67,18 @@ resource "aws_instance" "jenkins" {
 
     # Pull Jenkins Docker Image and run it with Docker socket mounted
     docker pull jenkins/jenkins:lts
-    # docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home jenkins/jenkins:lts - for without socket mounted
-    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 -v /mnt/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:lts
+    docker run -d --restart unless-stopped --name jenkins \
+        -p 8080:8080 -p 50000:50000 \
+        -v /mnt/jenkins_home:/var/jenkins_home \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        jenkins/jenkins:lts
+
+    # Wait for Jenkins container to start
+    sleep 30 
+    
+    # Install Docker CLI inside the Jenkins container
+    docker exec jenkins apt-get update
+    docker exec jenkins apt-get install -y docker.io
 
     # Install common utilities
     yum install -y jq git unzip
@@ -97,10 +107,11 @@ resource "aws_ebs_volume" "jenkins_data" {
   availability_zone = aws_instance.jenkins.availability_zone
   size              = 10
   type              = "gp3" # General purpose SSD
-  # snapshot_id       = "snap-06e7da529671e440c"
+  snapshot_id       = "snap-09f81c537df4d3a63"
+  /*
   lifecycle {
     prevent_destroy = true
-  }
+  } */
   tags = {
     Name = "JenkinsData"
   }
