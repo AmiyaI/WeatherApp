@@ -65,12 +65,13 @@ resource "aws_instance" "jenkins" {
     chown -R 1000:1000 /mnt/jenkins_home
     chmod -R 755 /mnt/jenkins_home
 
-    # Pull Jenkins Docker Image and run it with Docker socket mounted
+    # Pull Jenkins Docker Image and run it with Docker socket mounted and as root user
     docker pull jenkins/jenkins:lts
     docker run -d --restart unless-stopped --name jenkins \
         -p 8080:8080 -p 50000:50000 \
         -v /mnt/jenkins_home:/var/jenkins_home \
         -v /var/run/docker.sock:/var/run/docker.sock \
+        -u root \
         jenkins/jenkins:lts
 
     # Wait for Jenkins container to start
@@ -107,11 +108,11 @@ resource "aws_ebs_volume" "jenkins_data" {
   availability_zone = aws_instance.jenkins.availability_zone
   size              = 10
   type              = "gp3" # General purpose SSD
-  snapshot_id       = "snap-09f81c537df4d3a63"
-  /*
+  #snapshot_id       = "snap-09f81c537df4d3a63"
+
   lifecycle {
     prevent_destroy = true
-  } */
+  }
   tags = {
     Name = "JenkinsData"
   }
