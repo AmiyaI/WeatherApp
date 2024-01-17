@@ -8,6 +8,12 @@ pipeline {
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 // Checkout the source code from the repository
