@@ -33,27 +33,27 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
-            steps {
-                script {
-                    // Use stored AWS credentials for ECR authentication
-                    withCredentials([usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'AWS_CREDENTIALS_ID']) {
-                        // Authenticate with ECR
-                        sh '''
-                            aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}
+    steps {
+        script {
+            // Use stored AWS credentials for ECR authentication
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'AWS-CREDENTIALS-ID', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                // Authenticate with ECR
+                sh '''
+                    aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}
 
-                            // Build and push the Docker images
-                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
-                            docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
-                            docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+                    // Build and push the Docker images
+                    docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
+                    docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+                    docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
 
-                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
-                            docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                            docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                        '''
-                    }
-                }
+                    docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
+                    docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                    docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                '''
             }
         }
+    }
+}
 
         stage('Deploy') {
             steps {
