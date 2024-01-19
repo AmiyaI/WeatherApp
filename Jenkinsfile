@@ -34,11 +34,11 @@ pipeline {
 
         stage('Build and Push Docker Images') {
             agent {
-        docker {
-            image 'amazon/aws-cli' // Use an image that includes the AWS CLI
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount the Docker socket
-        }
-    }
+                docker {
+                    image 'amazon/aws-cli' // Use an image that includes the AWS CLI
+                    args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount the Docker socket
+                }
+            }
     steps {
         script {
             // Use stored AWS credentials for ECR authentication
