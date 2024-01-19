@@ -36,6 +36,8 @@ resource "aws_instance" "jenkins" {
   # User data script to setup Jenkins
   user_data = <<-EOF
     #!/bin/bash
+    set -e
+
     # Update system packages
     yum update -y
 
@@ -45,52 +47,42 @@ resource "aws_instance" "jenkins" {
     systemctl enable docker
     usermod -aG docker ec2-user
 
-    # Create mount directory for Jenkins
+    # Create mount directory for Jenkins if it doesn't exist
     mkdir -p /mnt/jenkins_home
 
-    # Check if /dev/xvdh has a file system and format if it doesn't
+    # Format and mount EBS volume if necessary
     FS_TYPE=$(file -s /dev/xvdh | cut -d , -f 1 | awk '{ print $2 }')
     if [ "$FS_TYPE" == "data" ]; then
-        # No file system, so format the volume as ext4
         mkfs -t ext4 /dev/xvdh
     fi
-
-    # Mount EBS volume to a local path
     mount /dev/xvdh /mnt/jenkins_home
-
-    # Make the mount persist across reboots
     echo '/dev/xvdh /mnt/jenkins_home ext4 defaults,nofail 0 2' >> /etc/fstab
 
-    # Correct permissions for Jenkins
+    # Set permissions for Jenkins
     chown -R 1000:1000 /mnt/jenkins_home
     chmod -R 755 /mnt/jenkins_home
 
-    # Pull Jenkins Docker Image and run it with Docker socket mounted and as root user
+    # Run Jenkins Docker container with mounted volume and Docker socket
     docker pull jenkins/jenkins:lts
-    docker run -d --restart unless-stopped --name jenkins \
-        -p 8080:8080 -p 50000:50000 \
+    docker run -d --restart unless-stopped --name jenkins -p 8080:8080 -p 50000:50000 \
         -v /mnt/jenkins_home:/var/jenkins_home \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -u root \
         jenkins/jenkins:lts
 
-    # Wait for Jenkins container to start
-    sleep 30 
-    
-    # Install Docker CLI inside the Jenkins container
+    # Wait for Jenkins to start
+    until docker exec jenkins ls /var/jenkins_home; do sleep 5; done
+
+    # Install Docker CLI inside Jenkins container
     docker exec jenkins apt-get update
     docker exec jenkins apt-get install -y docker.io
 
-    # Install common utilities
+    # Install common utilities and AWS CLI v2
     yum install -y jq git unzip
-
-    # Install AWS CLI v2
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     unzip awscliv2.zip
     ./aws/install
-
-    # Clean up installation files
-    rm -f awscliv2.zip
+    rm -f awscliv2.zip awscliv2.zip
   EOF
 }
 
@@ -113,6 +105,7 @@ resource "aws_ebs_volume" "jenkins_data" {
   lifecycle {
     prevent_destroy = true
   }
+
   tags = {
     Name = "JenkinsData"
   }
