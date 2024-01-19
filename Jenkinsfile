@@ -33,33 +33,28 @@ pipeline {
         }
 
         stage('Build and Push Docker Images') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli' // Use an image that includes the AWS CLI
-                    args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount the Docker socket
+            steps {
+                script {
+                    // Pull the AWS CLI Docker image and run it to execute AWS commands
+                    sh 'docker pull amazon/aws-cli'
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock amazon/aws-cli ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}'
+
+                    // Use stored AWS credentials for ECR authentication
+                    withCredentials([usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'AWS-CREDENTIALS-ID']) {
+                        // Build and push the Docker images
+                        sh '''
+                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
+                            docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+                            docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
+
+                            docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
+                            docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                            docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
+                        '''
+                    }
                 }
             }
-    steps {
-        script {
-            // Use stored AWS credentials for ECR authentication
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'AWS-CREDENTIALS-ID', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                // Authenticate with ECR
-                sh '''
-                    aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}
-
-                    // Build and push the Docker images
-                    docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"
-                    docker tag ${ECR_REPO_URI}:initialize_db-latest ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
-                    docker push ${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}
-
-                    docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:s3dataingest-latest -f "Lambda Functions/lambda_function2/Dockerfile" "Lambda Functions/lambda_function2"
-                    docker tag ${ECR_REPO_URI}:s3dataingest-latest ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                    docker push ${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}
-                '''
-            }
         }
-    }
-}
 
         stage('Deploy') {
             steps {
