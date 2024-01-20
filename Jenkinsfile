@@ -62,7 +62,7 @@ pipeline {
                 script {
                     // Change directory to Terraform configuration and execute deployment
                     sh '''
-                        cd terraform
+                        cd Terraform
                         terraform init
                         terraform apply -auto-approve \
                             -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
