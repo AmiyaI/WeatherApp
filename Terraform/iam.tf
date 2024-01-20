@@ -29,6 +29,7 @@ resource "aws_iam_policy" "ec2_policy" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
+          "ecr:GetAuthorizationToken",
           "s3:GetObject",
           "s3:ListBucket"
         ],

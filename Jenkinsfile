@@ -40,7 +40,7 @@ pipeline {
                     sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock amazon/aws-cli ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REPO_URI}'
 
                     // Use stored AWS credentials for ECR authentication
-                    withCredentials([usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: 'AWS-CREDENTIALS-ID']) {
+                    withCredentials([usernamePassword(credentialsId: 'AWS-CREDENTIALS-ID', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         // Build and push the Docker images
                         sh '''
                             docker buildx build --platform linux/amd64 -t ${ECR_REPO_URI}:initialize_db-latest -f "Lambda Functions/lambda_function1/Dockerfile" "Lambda Functions/lambda_function1"

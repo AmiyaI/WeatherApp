@@ -100,8 +100,7 @@ resource "aws_ebs_volume" "jenkins_data" {
   availability_zone = aws_instance.jenkins.availability_zone
   size              = 10
   type              = "gp3" # General purpose SSD
-  #snapshot_id       = "snap-09f81c537df4d3a63"
-
+  #snapshot_id       = " "
   lifecycle {
     prevent_destroy = true
   }
