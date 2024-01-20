@@ -66,7 +66,7 @@ pipeline {
                     if (sh(script: 'which terraform', returnStatus: true) != 0) {
                         echo 'Installing Terraform...'
                         sh '''
-                            wget https://releases.hashicorp.com/terraform/${terraformVersion}/terraform_${terraformVersion}_linux_amd64.zip
+                            curl -O https://releases.hashicorp.com/terraform/${terraformVersion}/terraform_${terraformVersion}_linux_amd64.zip
                             unzip terraform_${terraformVersion}_linux_amd64.zip
                             mv terraform /usr/local/bin/
                         '''
