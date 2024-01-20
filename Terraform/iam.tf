@@ -34,6 +34,9 @@ resource "aws_iam_policy" "ec2_policy" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
           "ecr:GetAuthorizationToken",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
           "s3:GetObject",
           "s3:ListBucket"
         ],
