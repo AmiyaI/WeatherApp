@@ -59,21 +59,19 @@ pipeline {
         stage('Setup Terraform') {
             steps {
                 script {
-                    // Define the desired Terraform version
-                    def terraformVersion = '1.6.5' // Adjust this to the Terraform version you wish to use
-
-                    // Check if Terraform is installed
-                    if (sh(script: 'which terraform', returnStatus: true) != 0) {
-                        echo 'Installing Terraform...'
-                        sh '''
-                            curl -O https://releases.hashicorp.com/terraform/${terraformVersion}/terraform_${terraformVersion}_linux_amd64.zip
-                            unzip terraform_${terraformVersion}_linux_amd64.zip
-                            mv terraform /usr/local/bin/
-                        '''
-                    } else {
-                        echo 'Terraform is already installed.'
+                        // Check if Terraform is installed
+                        if (sh(script: 'which terraform', returnStatus: true) != 0) {
+                            echo 'Installing Terraform...'
+                            // Replace "1.6.5" with the desired Terraform version
+                            sh '''
+                                curl -O https://releases.hashicorp.com/terraform/1.6.5/terraform_1.6.5_linux_amd64.zip
+                                unzip terraform_1.6.5_linux_amd64.zip
+                                mv terraform /usr/local/bin/
+                            '''
+                        } else {
+                            echo 'Terraform is already installed.'
+                        }
                     }
-                }
             }
         }    
 
