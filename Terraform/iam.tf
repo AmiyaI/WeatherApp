@@ -38,7 +38,9 @@ resource "aws_iam_policy" "ec2_policy" {
           "dynamodb:PutItem",
           "dynamodb:DeleteItem",
           "s3:GetObject",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject"
         ],
         Effect   = "Allow",
         Resource = "*"
