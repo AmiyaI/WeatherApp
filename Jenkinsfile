@@ -83,7 +83,7 @@ pipeline {
                     sh '''
                         cd Terraform
                         terraform init
-                        terraform apply -auto-approve \
+                        terraform plan \
                             -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
                             -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}" | tee terraform_output.log
                     '''
