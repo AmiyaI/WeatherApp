@@ -5,6 +5,7 @@ pipeline {
         // Define environment variables for the pipeline
         AWS_DEFAULT_REGION = 'us-east-1'
         ECR_REPO_URI = '004678516606.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo'
+        TF_LOG = 'DEBUG' // Set Terraform logging to DEBUG level
     }
 
     stages {
@@ -59,21 +60,20 @@ pipeline {
         stage('Setup Terraform') {
             steps {
                 script {
-                        // Check if Terraform is installed
-                        if (sh(script: 'which terraform', returnStatus: true) != 0) {
-                            echo 'Installing Terraform...'
-                            // Replace "1.6.5" with the desired Terraform version
-                            sh '''
-                                curl -O https://releases.hashicorp.com/terraform/1.6.5/terraform_1.6.5_linux_amd64.zip
-                                unzip terraform_1.6.5_linux_amd64.zip
-                                mv terraform /usr/local/bin/
-                            '''
-                        } else {
-                            echo 'Terraform is already installed.'
-                        }
+                    // Check if Terraform is installed
+                    if (sh(script: 'which terraform', returnStatus: true) != 0) {
+                        echo 'Installing Terraform...'
+                        sh '''
+                            curl -O https://releases.hashicorp.com/terraform/1.6.5/terraform_1.6.5_linux_amd64.zip
+                            unzip terraform_1.6.5_linux_amd64.zip
+                            mv terraform /usr/local/bin/
+                        '''
+                    } else {
+                        echo 'Terraform is already installed.'
                     }
+                }
             }
-        }    
+        }
 
         stage('Deploy') {
             steps {
@@ -85,8 +85,9 @@ pipeline {
                         terraform init
                         terraform apply -auto-approve \
                             -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
-                            -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}"
+                            -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}" | tee terraform_output.log
                     '''
+                    archiveArtifacts artifacts: 'Terraform/terraform_output.log', onlyIfSuccessful: false
                 }
             }
         }
