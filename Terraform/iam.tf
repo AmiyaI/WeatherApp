@@ -49,7 +49,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "dynamodb:DeleteItem",
           "dynamodb:DescribeTable",
           "dynamodb:DescribeContinuousBackups",
-          "dynamodb:DescribeTimeToLive"
+          "dynamodb:DescribeTimeToLive",
+          "dynamodb:ListTagsOfResource"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -63,7 +64,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:DeleteObject",
           "s3:GetBucketPolicy",
           "s3:GetBucketAcl",
-          "s3:GetBucketCORS"
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -93,7 +95,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeSubnets",
           "ec2:DescribeInternetGateways",
           "ec2:DescribeRouteTables",
-          "ec2:DescribeVpcAttribute"
+          "ec2:DescribeVpcAttribute",
+          "ec2:DescribeVpcs"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -106,7 +109,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "iam:ListRolePolicies",
           "iam:GetPolicyVersion",
           "iam:ListAttachedRolePolicies",
-          "iam:GetRolePolicy"
+          "iam:GetRolePolicy",
+          "iam:GetInstanceProfile"
         ],
         Effect   = "Allow",
         Resource = "*"
