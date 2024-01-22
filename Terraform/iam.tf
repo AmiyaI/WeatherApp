@@ -17,7 +17,7 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-# Policy for EC2 instances to interact with various AWS services
+# Policy for EC2 instances to interact with ECR, S3, DynamoDB, EC2, IAM, and Lambda
 resource "aws_iam_policy" "ec2_policy" {
   name = "ec2_policy"
   path = "/"
@@ -25,7 +25,7 @@ resource "aws_iam_policy" "ec2_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        # Permissions for ECR (Elastic Container Registry)
+        # ECR-related permissions
         Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
@@ -39,35 +39,37 @@ resource "aws_iam_policy" "ec2_policy" {
           "ecr:ListTagsForResource"
         ],
         Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
+        Resource = "*"
       },
       {
-        # Permissions for DynamoDB
+        # DynamoDB-related permissions
         Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:DeleteItem",
           "dynamodb:DescribeTable",
-          "dynamodb:DescribeContinuousBackups"
+          "dynamodb:DescribeContinuousBackups",
+          "dynamodb:DescribeTimeToLive"
         ],
         Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
+        Resource = "*"
       },
       {
-        # Permissions for S3 (Simple Storage Service)
+        # S3-related permissions
         Action = [
           "s3:GetObject",
           "s3:ListBucket",
           "s3:PutObject",
           "s3:DeleteObject",
-          "s3:GetBucketPolicy", // Adjust as needed for specific buckets
-          "s3:GetBucketAcl"     // Adjust as needed for specific buckets
+          "s3:GetBucketPolicy",
+          "s3:GetBucketAcl",
+          "s3:GetBucketCORS"
         ],
         Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
+        Resource = "*"
       },
       {
-        # Permissions for Lambda functions
+        # Lambda-related permissions
         Action = [
           "lambda:CreateFunction",
           "lambda:InvokeFunction",
@@ -81,28 +83,33 @@ resource "aws_iam_policy" "ec2_policy" {
           "lambda:ListFunctions"
         ],
         Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
+        Resource = "*"
       },
       {
-        # Permissions for IAM roles and policies
+        # EC2-related permissions
+        Action = [
+          "ec2:DescribeImages",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeVpcAttribute"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      },
+      {
+        # IAM-related permissions
         Action = [
           "iam:GetRole",
           "iam:GetPolicy",
           "iam:ListRolePolicies",
-          "iam:GetPolicyVersion"
+          "iam:GetPolicyVersion",
+          "iam:ListAttachedRolePolicies",
+          "iam:GetRolePolicy"
         ],
         Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
-      },
-      {
-        # Permissions for EC2 (Elastic Compute Cloud)
-        Action = [
-          "ec2:DescribeImages",
-          "ec2:DescribeVpcs",
-          "ec2:DescribeVpcAttribute"
-        ],
-        Effect   = "Allow",
-        Resource = "*" // Adjust as needed to restrict to specific resources
+        Resource = "*"
       }
     ]
   })
