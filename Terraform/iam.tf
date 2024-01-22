@@ -50,7 +50,14 @@ resource "aws_iam_policy" "ec2_policy" {
           "lambda:AddPermission",
           "lambda:RemovePermission",
           "lambda:GetPolicy",
-          "lambda:ListFunctions"
+          "lambda:ListFunctions",
+          "dynamodb:DescribeTable",
+          "ec2:DescribeImages",
+          "ecr:DescribeRepositories",
+          "iam:GetRole",
+          "iam:GetPolicy",
+          "s3:GetBucketPolicy", // Adjust as needed for specific buckets
+          "ec2:DescribeVpcs"
         ],
         Effect   = "Allow",
         Resource = "*"

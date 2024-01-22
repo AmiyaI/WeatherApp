@@ -21,10 +21,10 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Jenkins EC2 Instance Configuration
 resource "aws_instance" "jenkins" {
-  ami             = data.aws_ami.amazon_linux_2023.id
-  instance_type   = "t3.small"
-  key_name        = "JasonBourne"
-  subnet_id       = aws_subnet.public-1.id
+  ami           = data.aws_ami.amazon_linux_2023.id
+  instance_type = "t3.small"
+  key_name      = "JasonBourne"
+  subnet_id     = aws_subnet.public-1.id
   #security_groups = [aws_security_group.jenkins_sg.id]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   tags = {
