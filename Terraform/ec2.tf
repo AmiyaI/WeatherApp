@@ -21,10 +21,10 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Jenkins EC2 Instance Configuration
 resource "aws_instance" "jenkins" {
-  ami           = data.aws_ami.amazon_linux_2023.id
-  instance_type = var.instance_type
-  key_name      = "JasonBourne"
-  subnet_id     = aws_subnet.public-1.id
+  ami             = data.aws_ami.amazon_linux_2023.id
+  instance_type   = "t3.small"
+  key_name        = "JasonBourne"
+  subnet_id       = aws_subnet.public-1.id
   #security_groups = [aws_security_group.jenkins_sg.id]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
   tags = {
@@ -51,12 +51,12 @@ resource "aws_instance" "jenkins" {
     mkdir -p /mnt/jenkins_home
 
     # Format and mount EBS volume if necessary
-    FS_TYPE=$(file -s /dev/xvdh | cut -d , -f 1 | awk '{ print $2 }')
+    FS_TYPE=$(file -s /dev/nvme1n1 | cut -d , -f 1 | awk '{ print $2 }')
     if [ "$FS_TYPE" == "data" ]; then
-        mkfs -t ext4 /dev/xvdh
+        mkfs -t ext4 /dev/nvme1n1
     fi
-    mount /dev/xvdh /mnt/jenkins_home
-    echo '/dev/xvdh /mnt/jenkins_home ext4 defaults,nofail 0 2' >> /etc/fstab
+    mount /dev/nvme1n1 /mnt/jenkins_home
+    echo '/dev/nvme1n1 /mnt/jenkins_home ext4 defaults,nofail 0 2' >> /etc/fstab
 
     # Set permissions for Jenkins
     chown -R 1000:1000 /mnt/jenkins_home
@@ -100,7 +100,7 @@ resource "aws_ebs_volume" "jenkins_data" {
   availability_zone = aws_instance.jenkins.availability_zone
   size              = 10
   type              = "gp3" # General purpose SSD
-  #snapshot_id       = " "
+  #snapshot_id       = ""
   lifecycle {
     prevent_destroy = true
   }
