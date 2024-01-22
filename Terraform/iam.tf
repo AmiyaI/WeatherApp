@@ -65,7 +65,16 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:GetBucketPolicy",
           "s3:GetBucketAcl",
           "s3:GetBucketCORS",
-          "s3:GetBucketWebsite"
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning"
+        ],
+        Effect   = "Allow",
+        Resource = "*"
+      },
+      {
+        # RDS-related permissions
+        Action = [
+          "rds:DescribeDBSubnetGroups"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -96,7 +105,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeInternetGateways",
           "ec2:DescribeRouteTables",
           "ec2:DescribeVpcAttribute",
-          "ec2:DescribeVpcs"
+          "ec2:DescribeVpcs",
+          "ec2:DescribeVpcEndpoints"
         ],
         Effect   = "Allow",
         Resource = "*"
