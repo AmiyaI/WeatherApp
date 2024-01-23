@@ -82,7 +82,7 @@ pipeline {
                     // Inject IP variables from Jenkins credentials
                     withCredentials([
                         string(credentialsId: 'MY_IP', variable: 'MY_IP'),
-                        string(credentialsId: 'PANERA_IP', variable: 'PANERA_IP')
+                        string(credentialsId: 'PANERA_IP', variable: 'PANERA_IP'),
                         string(credentialsId: 'DB_USERNAME', variable: 'DB_USERNAME'),
                         string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD')
                     ]) {
