@@ -85,15 +85,15 @@ pipeline {
                         string(credentialsId: 'PANERA_IP', variable: 'PANERA_IP')
                     ]) {
                         // Change directory to Terraform configuration and execute deployment
-                        sh '''
+                        sh """
                             cd Terraform
                             terraform init
                             terraform plan \
-                                -var "my_ip=${env.MY_IP}" \
-                                -var "panera_ip=${env.PANERA_IP}" \
+                                -var "my_ip=${MY_IP}" \
+                                -var "panera_ip=${PANERA_IP}" \
                                 -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
                                 -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}" | tee terraform_output.log
-                        '''
+                        """
                     }
                     archiveArtifacts artifacts: 'Terraform/terraform_output.log', onlyIfSuccessful: false
                 }
