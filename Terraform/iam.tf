@@ -96,7 +96,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "lambda:AddPermission",
           "lambda:RemovePermission",
           "lambda:GetPolicy",
-          "lambda:ListFunctions"
+          "lambda:ListFunctions",
+          "lambda:ListVersionsByFunction"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -113,7 +114,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeVpcs",
           "ec2:DescribeVpcEndpoints",
           "ec2:DescribePrefixLists",
-          "ec2:DescribeInstances"
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceTypes"
         ],
         Effect   = "Allow",
         Resource = "*"
