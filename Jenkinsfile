@@ -83,12 +83,16 @@ pipeline {
                     withCredentials([
                         string(credentialsId: 'MY_IP', variable: 'MY_IP'),
                         string(credentialsId: 'PANERA_IP', variable: 'PANERA_IP')
+                        string(credentialsId: 'DB_USERNAME', variable: 'DB_USERNAME'),
+                        string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD')
                     ]) {
                         // Change directory to Terraform configuration and execute deployment
                         sh """
                             cd Terraform
                             terraform init
                             terraform plan \
+                                -var "db_username=${DB_USERNAME}" \
+                                -var "db_password=${DB_PASSWORD}" \
                                 -var "my_ip=${MY_IP}" \
                                 -var "panera_ip=${PANERA_IP}" \
                                 -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \

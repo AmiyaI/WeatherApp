@@ -71,7 +71,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:GetAccelerateConfiguration",
           "s3:PutAccelerateConfiguration",
           "s3:GetBucketRequestPayment",
-          "s3:PutBucketRequestPayment"
+          "s3:PutBucketRequestPayment",
+          "s3:GetBucketLogging"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -117,7 +118,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeVpcEndpoints",
           "ec2:DescribePrefixLists",
           "ec2:DescribeInstances",
-          "ec2:DescribeInstanceTypes"
+          "ec2:DescribeInstanceTypes",
+          "ec2:DescribeTags"
         ],
         Effect   = "Allow",
         Resource = "*"
