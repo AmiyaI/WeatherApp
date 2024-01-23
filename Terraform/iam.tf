@@ -69,7 +69,9 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:GetBucketVersioning",
           "s3:GetBucketAccelerateConfiguration",
           "s3:GetAccelerateConfiguration",
-          "s3:PutAccelerateConfiguration"
+          "s3:PutAccelerateConfiguration",
+          "s3:GetBucketRequestPayment",
+          "s3:PutBucketRequestPayment"
         ],
         Effect   = "Allow",
         Resource = "*"
