@@ -17,7 +17,7 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
-# Policy for EC2 instances to interact with ECR, S3, DynamoDB, EC2, IAM, and Lambda
+# Policy for EC2 instances to interact with ECR, S3, DynamoDB, EC2, IAM, RDS, and Lambda
 resource "aws_iam_policy" "ec2_policy" {
   name = "ec2_policy"
   path = "/"
@@ -68,12 +68,14 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:GetBucketWebsite",
           "s3:GetBucketVersioning",
           "s3:GetBucketAccelerateConfiguration",
-          "s3:GetAccelerateConfiguration",
-          "s3:PutAccelerateConfiguration",
+          "s3:PutBucketAccelerateConfiguration",
           "s3:GetBucketRequestPayment",
           "s3:PutBucketRequestPayment",
           "s3:GetBucketLogging",
-          "s3:GetLifecycleConfiguration"
+          "s3:GetLifecycleConfiguration",
+          "s3:GetBucketReplication",
+          "s3:PutLifecycleConfiguration",
+          "s3:PutBucketReplication"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -83,7 +85,10 @@ resource "aws_iam_policy" "ec2_policy" {
         Action = [
           "rds:DescribeDBSubnetGroups",
           "rds:ListTagsForResource",
-          "rds:DescribeDBInstances"
+          "rds:DescribeDBInstances",
+          "rds:CreateDBInstance",
+          "rds:ModifyDBInstance",
+          "rds:DeleteDBInstance"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -121,7 +126,15 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeInstances",
           "ec2:DescribeInstanceTypes",
           "ec2:DescribeTags",
-          "ec2:DescribeInstanceAttribute"
+          "ec2:DescribeInstanceAttribute",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeInstanceStatus",
+          "ec2:DescribeLaunchTemplates",
+          "ec2:CreateTags",
+          "ec2:RunInstances",
+          "ec2:StartInstances",
+          "ec2:StopInstances",
+          "ec2:TerminateInstances"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -135,7 +148,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "iam:GetPolicyVersion",
           "iam:ListAttachedRolePolicies",
           "iam:GetRolePolicy",
-          "iam:GetInstanceProfile"
+          "iam:GetInstanceProfile",
+          "iam:PassRole"
         ],
         Effect   = "Allow",
         Resource = "*"
