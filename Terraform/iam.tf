@@ -134,7 +134,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:RunInstances",
           "ec2:StartInstances",
           "ec2:StopInstances",
-          "ec2:TerminateInstances"
+          "ec2:TerminateInstances",
+          "ec2:DescribeInstanceCreditSpecifications"
         ],
         Effect   = "Allow",
         Resource = "*"
