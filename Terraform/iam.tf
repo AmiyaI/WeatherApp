@@ -67,7 +67,9 @@ resource "aws_iam_policy" "ec2_policy" {
           "s3:GetBucketCORS",
           "s3:GetBucketWebsite",
           "s3:GetBucketVersioning",
-          "s3:GetBucketAccelerateConfiguration"
+          "s3:GetBucketAccelerateConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:PutAccelerateConfiguration"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -77,6 +79,7 @@ resource "aws_iam_policy" "ec2_policy" {
         Action = [
           "rds:DescribeDBSubnetGroups",
           "rds:ListTagsForResource",
+          "rds:DescribeDBInstances"
         ],
         Effect   = "Allow",
         Resource = "*"
@@ -109,7 +112,8 @@ resource "aws_iam_policy" "ec2_policy" {
           "ec2:DescribeVpcAttribute",
           "ec2:DescribeVpcs",
           "ec2:DescribeVpcEndpoints",
-          "ec2:DescribePrefixLists"
+          "ec2:DescribePrefixLists",
+          "ec2:DescribeInstances"
         ],
         Effect   = "Allow",
         Resource = "*"
