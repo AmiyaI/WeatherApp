@@ -90,7 +90,7 @@ pipeline {
                         sh """
                             cd Terraform
                             terraform init
-                            terraform plan \
+                            terraform apply auto-approve \
                                 -var "db_username=${DB_USERNAME}" \
                                 -var "db_password=${DB_PASSWORD}" \
                                 -var "my_ip=${MY_IP}" \
