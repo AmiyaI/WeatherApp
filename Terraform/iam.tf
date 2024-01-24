@@ -56,31 +56,6 @@ resource "aws_iam_policy" "ec2_policy" {
         Resource = "*"
       },
       {
-        # S3-related permissions
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:GetBucketPolicy",
-          "s3:GetBucketAcl",
-          "s3:GetBucketCORS",
-          "s3:GetBucketWebsite",
-          "s3:GetBucketVersioning",
-          "s3:GetBucketAccelerateConfiguration",
-          "s3:PutBucketAccelerateConfiguration",
-          "s3:GetBucketRequestPayment",
-          "s3:PutBucketRequestPayment",
-          "s3:GetBucketLogging",
-          "s3:GetLifecycleConfiguration",
-          "s3:GetBucketReplication",
-          "s3:PutLifecycleConfiguration",
-          "s3:PutBucketReplication"
-        ],
-        Effect   = "Allow",
-        Resource = "*"
-      },
-      {
         # RDS-related permissions
         Action = [
           "rds:DescribeDBSubnetGroups",
@@ -112,35 +87,6 @@ resource "aws_iam_policy" "ec2_policy" {
         Resource = "*"
       },
       {
-        # EC2-related permissions
-        Action = [
-          "ec2:DescribeImages",
-          "ec2:DescribeSecurityGroups",
-          "ec2:DescribeSubnets",
-          "ec2:DescribeInternetGateways",
-          "ec2:DescribeRouteTables",
-          "ec2:DescribeVpcAttribute",
-          "ec2:DescribeVpcs",
-          "ec2:DescribeVpcEndpoints",
-          "ec2:DescribePrefixLists",
-          "ec2:DescribeInstances",
-          "ec2:DescribeInstanceTypes",
-          "ec2:DescribeTags",
-          "ec2:DescribeInstanceAttribute",
-          "ec2:DescribeVolumes",
-          "ec2:DescribeInstanceStatus",
-          "ec2:DescribeLaunchTemplates",
-          "ec2:CreateTags",
-          "ec2:RunInstances",
-          "ec2:StartInstances",
-          "ec2:StopInstances",
-          "ec2:TerminateInstances",
-          "ec2:DescribeInstanceCreditSpecifications"
-        ],
-        Effect   = "Allow",
-        Resource = "*"
-      },
-      {
         # IAM-related permissions
         Action = [
           "iam:GetRole",
@@ -159,6 +105,16 @@ resource "aws_iam_policy" "ec2_policy" {
   })
 }
 
+
+resource "aws_iam_role_policy_attachment" "ec2_full_access" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "s3_full_access" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
 
 # Attach EC2 policy to EC2 IAM role
 resource "aws_iam_role_policy_attachment" "ec2_policy_attach" {
