@@ -90,13 +90,14 @@ pipeline {
                         sh """
                             cd Terraform
                             terraform init
-                            terraform apply auto-approve \
+                            terraform apply \
                                 -var "db_username=${DB_USERNAME}" \
                                 -var "db_password=${DB_PASSWORD}" \
                                 -var "my_ip=${MY_IP}" \
                                 -var "panera_ip=${PANERA_IP}" \
                                 -var "s3dataingest_image_uri=${ECR_REPO_URI}:s3dataingest-${GIT_COMMIT}" \
-                                -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}" | tee terraform_output.log
+                                -var "initialize_db_image_uri=${ECR_REPO_URI}:initialize_db-${GIT_COMMIT}" \
+                                -auto-approve | tee terraform_output.log
                         """
                     }
                     archiveArtifacts artifacts: 'Terraform/terraform_output.log', onlyIfSuccessful: false
