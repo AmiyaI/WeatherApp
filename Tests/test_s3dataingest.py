@@ -1,7 +1,8 @@
 # test_s3dataingest.py
 import sys
 import unittest
-from unittest.mock import patch
+import json
+from unittest.mock import patch, MagicMock
 sys.path.append('../Lambda Functions/lambda_function2')
 from s3dataingest import lambda_handler
 
@@ -11,29 +12,26 @@ class S3DataIngestTestCase(unittest.TestCase):
     def test_lambda_handler_with_mock_data(self, mock_boto3_client):
         # Mocking AWS services
         mock_s3 = mock_boto3_client.return_value
-        mock_s3.get_object.return_value = {
-            'Body': {
-                'read': lambda: '''
+        mock_body = MagicMock()
+        mock_body.read.return_value = json.dumps({
+            "weather_data": [
                 {
-                    "weather_data": [
-                        {
-                            "time": "2023-12-08T08:00:00Z",
-                            "temperature": 72,
-                            "humidity": 50,
-                            "wind_speed": 10,
-                            "condition": "Sunny"
-                        },
-                        {
-                            "time": "2023-12-08T09:00:00Z",
-                            "temperature": 74,
-                            "humidity": 45,
-                            "wind_speed": 12,
-                            "condition": "Partly Cloudy"
-                        }
-                    ]
-                }'''
-            }
-        }
+                    "time": "2023-12-08T08:00:00Z",
+                    "temperature": 100,
+                    "humidity": 50,
+                    "wind_speed": 10,
+                    "condition": "Unit Test"
+                },
+                {
+                    "time": "2023-12-08T09:00:00Z",
+                    "temperature": 30,
+                    "humidity": 45,
+                    "wind_speed": 12,
+                    "condition": "Unit Test 1"
+                }
+            ]
+        }).encode('utf-8')
+        mock_s3.get_object.return_value = {'Body': mock_body}
 
         # Simulate Lambda event and context (simplified)
         event = {
@@ -45,10 +43,8 @@ class S3DataIngestTestCase(unittest.TestCase):
         response = lambda_handler(event, context)
 
         # Assert: Make assertions about the response or any side effects
-        # Assertions will depend on what lambda_handler returns and its side effects
         self.assertEqual(response['statusCode'], 200)
         self.assertIn("Data processed and stored successfully", response['body'])
-        # Add more assertions as necessary based on how your function should process the mock data
 
 if __name__ == '__main__':
     unittest.main()
