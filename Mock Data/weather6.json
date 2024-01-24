@@ -1,0 +1,18 @@
+{
+    "weather_data": [
+        {
+            "time": "2024-12-08T14:00:00Z",
+            "temperature": -31,
+            "humidity": 30,
+            "wind_speed": 55,
+            "condition": "Cold and Windy"
+        },
+        {
+            "time": "2024-12-08T15:00:00Z",
+            "temperature": 69,
+            "humidity": 99,
+            "wind_speed": 2,
+            "condition": "Mild and wet"
+        }
+    ]
+}
