@@ -22,11 +22,13 @@ def calculate_heat_index(temperature, humidity):
 def assess_comfort(temperature, humidity):
     # Function to assess comfort level based on temperature and humidity
     logger.info(f"Assessing comfort level for temp: {temperature}, humidity: {humidity}")
-    # Simple logic to determine comfort level
+    # Logic to determine comfort level
     if temperature > 75 and humidity > 60:
         return "Uncomfortable"
     elif temperature < 40 and humidity < 30:
         return "Dry"
+    elif temperature < 32:  # Temperature below freezing point
+        return "Extremely Cold"
     else:
         return "Comfortable"
 
