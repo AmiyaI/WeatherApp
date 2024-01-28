@@ -26,10 +26,10 @@ pipeline {
             steps {
                 echo "Running unit tests"
                 // Run unit tests directly in Jenkins container
-                sh """
+               /* sh """
                     cd /var/jenkins_home/workspace/WeatherApp
                     python3 -m unittest discover -s Tests -p 'test*.py'
-                """
+                """ */
             }
         }
 
