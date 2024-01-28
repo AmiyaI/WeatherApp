@@ -1,8 +1,13 @@
 # test_initialize_db.py
+import os
 import sys
 import unittest
 from unittest.mock import patch, MagicMock
-sys.path.append('../../Lambda Functions/lambda_function1')
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+lambda_function_dir = os.path.join(current_dir, '../../Lambda Functions/lambda_function1')
+sys.path.append(lambda_function_dir)
+
 from initialize_db import lambda_handler
 
 class InitializeDBTestCase(unittest.TestCase):

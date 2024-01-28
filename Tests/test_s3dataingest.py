@@ -1,9 +1,13 @@
 # test_s3dataingest.py
+import os
 import sys
 import unittest
-import json
-from unittest.mock import patch, MagicMock
-sys.path.append('../../Lambda Functions/lambda_function2')
+from unittest.mock import patch
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+lambda_function_dir = os.path.join(current_dir, '../../Lambda Functions/lambda_function2')
+sys.path.append(lambda_function_dir)
+
 from s3dataingest import lambda_handler
 
 class S3DataIngestTestCase(unittest.TestCase):
