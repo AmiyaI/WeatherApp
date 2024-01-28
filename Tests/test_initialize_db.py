@@ -1,12 +1,10 @@
 # test_initialize_db.py
-import os
 import sys
 import unittest
 from unittest.mock import patch, MagicMock
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-lambda_function_dir = os.path.join(current_dir, '../../Lambda Functions/lambda_function1')
-sys.path.append(lambda_function_dir)
+# Explicitly specify the full path to the lambda function directory
+sys.path.append('/var/jenkins_home/workspace/WeatherApp/Lambda Functions/lambda_function1')
 
 from initialize_db import lambda_handler
 

@@ -1,12 +1,11 @@
 # test_s3dataingest.py
-import os
 import sys
 import unittest
 from unittest.mock import patch
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-lambda_function_dir = os.path.join(current_dir, '../../Lambda Functions/lambda_function2')
-sys.path.append(lambda_function_dir)
+# Explicitly specify the full path to the lambda function directory
+sys.path.append('/var/jenkins_home/workspace/WeatherApp/Lambda Functions/lambda_function2')
+
 
 from s3dataingest import lambda_handler
 
