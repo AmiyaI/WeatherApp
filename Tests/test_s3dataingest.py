@@ -1,5 +1,4 @@
 # test_s3dataingest.py
-import os
 import sys
 import unittest
 from unittest.mock import patch, MagicMock
@@ -11,7 +10,6 @@ sys.path.append('/var/jenkins_home/workspace/WeatherApp/Lambda Functions/lambda_
 from s3dataingest import lambda_handler
 
 class S3DataIngestTestCase(unittest.TestCase):
-
     @patch('boto3.client')
     def test_lambda_handler_with_mock_data(self, mock_boto3_client):
         # Mocking AWS services
@@ -37,14 +35,25 @@ class S3DataIngestTestCase(unittest.TestCase):
         }).encode('utf-8')
         mock_s3.get_object.return_value = {'Body': mock_body}
 
-        # Simulate Lambda event and context (simplified)
-        event = {
-            # Simulate the necessary event structure here
+        # Provide a mock event with the necessary structure
+        mock_event = {
+            'Records': [
+                {
+                    's3': {
+                        'bucket': {
+                            'name': 'test-bucket'
+                        },
+                        'object': {
+                            'key': 'test-key.json'
+                        }
+                    }
+                }
+            ]
         }
-        context = {}
+        mock_context = {}
 
         # Act: Call the lambda_handler function with the mock data
-        response = lambda_handler(event, context)
+        response = lambda_handler(mock_event, mock_context)
 
         # Assert: Make assertions about the response or any side effects
         self.assertEqual(response['statusCode'], 200)
@@ -52,4 +61,3 @@ class S3DataIngestTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

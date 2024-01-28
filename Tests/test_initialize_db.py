@@ -10,12 +10,16 @@ sys.path.append('/var/jenkins_home/workspace/WeatherApp/Lambda Functions/lambda_
 from initialize_db import lambda_handler
 
 class InitializeDBTestCase(unittest.TestCase):
-
     @patch('initialize_db.psycopg2')
-    @patch.dict(os.environ, {'DB_NAME': 'test_db', 'DB_USER': 'test_user', 'DB_PASSWORD': 'test_password', 'DB_HOST': 'test_host', 'DB_PORT': '5432'})
+    @patch.dict(os.environ, {
+        'DB_NAME': 'test_db',
+        'DB_USERNAME': 'test_user',
+        'DB_PASSWORD': 'test_password',
+        'DB_HOST': 'test_host',
+        'DB_PORT': '5432'
+    })
     def test_lambda_handler(self, mock_psycopg2):
         # Arrange: Set up any data or state needed for the test
-        # Mocking the psycopg2 connect method
         mock_conn = MagicMock()
         mock_cur = MagicMock()
 
@@ -29,7 +33,7 @@ class InitializeDBTestCase(unittest.TestCase):
         self.assertEqual(response['statusCode'], 200)
         self.assertEqual(response['body'], 'Database initialized successfully')
 
-        # Ensure the cursor executed some SQL command - adjust the SQL command to whatever your script executes
+        # Ensure the cursor executed some SQL command
         mock_cur.execute.assert_called_with("""
         CREATE TABLE IF NOT EXISTS weather_data (
             time VARCHAR(255),
