@@ -1,11 +1,12 @@
 # test_s3dataingest.py
+import os
 import sys
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import json
 
 # Explicitly specify the full path to the lambda function directory
 sys.path.append('/var/jenkins_home/workspace/WeatherApp/Lambda Functions/lambda_function2')
-
 
 from s3dataingest import lambda_handler
 
@@ -51,3 +52,4 @@ class S3DataIngestTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

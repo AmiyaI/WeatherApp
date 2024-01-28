@@ -1,4 +1,5 @@
 # test_initialize_db.py
+import os
 import sys
 import unittest
 from unittest.mock import patch, MagicMock
@@ -11,6 +12,7 @@ from initialize_db import lambda_handler
 class InitializeDBTestCase(unittest.TestCase):
 
     @patch('initialize_db.psycopg2')
+    @patch.dict(os.environ, {'DB_NAME': 'test_db', 'DB_USER': 'test_user', 'DB_PASSWORD': 'test_password', 'DB_HOST': 'test_host', 'DB_PORT': '5432'})
     def test_lambda_handler(self, mock_psycopg2):
         # Arrange: Set up any data or state needed for the test
         # Mocking the psycopg2 connect method
@@ -40,8 +42,6 @@ class InitializeDBTestCase(unittest.TestCase):
             comfort_level VARCHAR(255)
         );
         """)
-
-# Add more tests as necessary for other parts of the function or error handling
 
 if __name__ == '__main__':
     unittest.main()
