@@ -28,7 +28,7 @@ pipeline {
                 // Run unit tests directly in Jenkins container
                 sh """
                     cd /var/jenkins_home/workspace/WeatherApp
-                    python3 -m unittest discover -s Tests -p 'test*.py'
+                    docker run --rm -v /var/jenkins_home/workspace/WeatherApp:/workspace python:3.11 /bin/bash -c 'pip install psycopg2 boto3 && python -m unittest discover -s /workspace/Tests -p test*.py'
                 """
             }
         }
