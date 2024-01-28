@@ -27,8 +27,8 @@ pipeline {
                 echo "Running unit tests"
                 // Pull the Python Docker image and run unit tests
                 sh '''
-                    docker pull python:3.11
-                    docker run --rm -v /var/jenkins_home/workspace:/jenkins_workspace python:3.11 /bin/bash -c "ls -la /jenkins_workspace && ls -la /jenkins_workspace/WeatherApp/Tests && python -m unittest discover -s /jenkins_workspace/WeatherApp/Tests -p 'test*.py'"
+                    cd WeatherApp
+                    python3 -m unittest discover -s Tests -p 'test*.py'
                 '''
             }
         }
