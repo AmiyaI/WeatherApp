@@ -3,7 +3,7 @@ import sys
 import unittest
 import json
 from unittest.mock import patch, MagicMock
-sys.path.append('../Lambda Functions/lambda_function2')
+sys.path.append('../../Lambda Functions/lambda_function2')
 from s3dataingest import lambda_handler
 
 class S3DataIngestTestCase(unittest.TestCase):
