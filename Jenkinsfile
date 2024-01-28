@@ -25,11 +25,11 @@ pipeline {
         stage('Unit Test') {
             steps {
                 echo "Running unit tests"
-                // Pull the Python Docker image and run unit tests
-                sh '''
-                    cd WeatherApp
+                // Run unit tests directly in Jenkins container
+                sh """
+                    cd /var/jenkins_home/workspace/WeatherApp
                     python3 -m unittest discover -s Tests -p 'test*.py'
-                '''
+                """
             }
         }
 
