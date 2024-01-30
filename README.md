@@ -22,6 +22,8 @@ WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for 
 - **DynamoDB**: Table for managing Terraform state locks.
 - **IAM Roles and Policies**: Define permissions for secure operations of AWS services.
 - **VPC Configuration**: Setup with public and private subnets, internet gateway, route tables, security groups, and a VPC endpoint for S3.
+  - **Public Subnets**: Hosts Jenkins Server and Bastion Host.
+  - **Private Subnets**: Hosts RDS database and Lambda functions.
 - **AWS Lambda Configuration**: Terraform setup for Lambda functions.
 - **ECR Repository**: Stores Docker images for Lambda functions.
 - **Jenkins Pipeline**: Automates testing, building Docker images, and deploying infrastructure.
