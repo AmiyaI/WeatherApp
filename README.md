@@ -55,4 +55,4 @@ Below are images demonstrating various stages of the WeatherApp pipeline and dat
 **The database showing weather data records following the processing of mock data by the Lambda functions.**
 
 ## Conclusion
-This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
+This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud. Thank you for checking out my project!
