@@ -1,112 +1,74 @@
-# Automated Weather Data Processing and Analytics Platform 
+# WeatherApp
 
-## Project Overview
+## Overview
+WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for collecting, processing, storing, and managing weather data. Leveraging AWS services and Terraform for infrastructure deployment, it features AWS Lambda for data processing, Amazon RDS for database storage, and an EC2 instance for CI/CD processes and secure access to the RDS database and other VPC resources.
 
-This project demonstrates an Automated Weather Data Processing and Analytics Platform utilizing AWS services, Terraform, Python, Docker, and Jenkins for Continuous Integration/Continuous Deployment (CI/CD). It aims to provide scalable and cost-effective solutions for real-time weather data ingestion, processing, and visualization.
+## Project Structure
+- **Lambda Functions**: Dockerized Python Lambda functions for processing weather data.
+  - `lambda_function1`: Initializes the PostgreSQL database schema.
+  - `lambda_function2`: Ingests and processes weather data from S3.
+- **Mock Data**: Sample JSON files (`weather1.json` to `weather6.json`) for testing.
+- **Terraform**: Infrastructure as Code (IaC) files for AWS resource management.
+- **Tests**: Unit tests for the Lambda functions.
+- **Jenkinsfile**: Configuration for the CI/CD pipeline.
 
-### Key Components & Technologies
+## Key Components
+### AWS Lambda Functions
+Processes weather data and initializes the database schema.
 
-- **AWS Services**: Utilizing Lambda, RDS (PostgreSQL), S3, EC2, IAM, and CloudWatch for a robust, scalable cloud environment.
-- **Terraform**: Infrastructure as Code (IaC) to provision and manage AWS resources.
-- **Python**: For writing Lambda functions that process weather data.
-- **Docker**: For containerizing Python applications and Jenkins environment.
-- **Jenkins**: For automating build, test, and deployment pipelines.
-- **Git/GitHub**: For source control and versioning.
+### Terraform Infrastructure
+#### EC2 Instances
+- **Jenkins Server**: Manages CI/CD pipeline for Dockerized Python Lambda functions.
+- **Bastion Host**: Provides secure access to RDS and other AWS resources.
 
-### Architecture
+#### Amazon RDS
+PostgreSQL database for storing processed weather data.
 
-1. **AWS S3 Bucket**: Stores raw weather data in JSON format.
-2. **AWS Lambda Functions**: Triggers on new data in S3, processes it, and stores it in RDS.
-3. **AWS RDS (PostgreSQL)**: Hosts the database for structured weather data storage.
-4. **AWS EC2 Instances**: Host Jenkins for CI/CD pipelines and serve as a Bastion Host for secure access.
-5. **VPC, Subnets, Security Groups**: Ensure network security and isolation.
+#### Amazon S3
+Bucket for weather data and Terraform state files.
 
-### Detailed Workflow
+#### DynamoDB
+Table for managing Terraform state locks.
 
-#### Initial Setup
+#### IAM Roles and Policies
+Define permissions for secure operations of AWS services.
 
-- Source code is maintained in GitHub.
-- AWS CLI and Terraform are set up for cloud resource provisioning.
-- Dockerfiles are prepared for Python and Jenkins environments.
+#### VPC Configuration
+- **Public Subnets**: Hosts Jenkins Server and Bastion Host.
+- **Private Subnets**: Hosts RDS database and Lambda functions.
+- Includes internet gateway, route tables, security groups, and a VPC endpoint for S3.
 
-#### Infrastructure Provisioning (Terraform)
+#### AWS Lambda Configuration
+Terraform setup for Lambda functions.
 
-- Scripts provision S3 for data storage, RDS for PostgreSQL database, Lambda functions for data processing, EC2 instances for Jenkins and Bastion Host, and necessary security configurations.
+#### ECR Repository
+Stores Docker images for Lambda functions.
 
-#### Application Containerization (Docker)
+### Jenkins Pipeline
+Automates testing, building Docker images, and deploying infrastructure.
 
-- Python application and Jenkins are containerized to ensure consistent environments.
-
-#### CI/CD Pipeline (Jenkins)
-
-- Automates testing, building Docker images, pushing to AWS ECR, and deploying Lambda functions.
-
-#### Python Application Development
-
-- Lambda functions process incoming weather data, transforming and storing it in the RDS database.
-
-#### Testing & Quality Assurance
-
-- Unit tests for Python scripts.
-- Code quality checks integrated into Jenkins pipelines.
-
-#### Monitoring (AWS CloudWatch)
-
-- Monitors key metrics and sets up alerts for system health and performance.
-
-#### Optional Web Dashboard
-
-- A front-end application for visualizing weather data analytics (if implemented).
+### Unit Testing
+Ensures functionality and reliability of Lambda functions.
 
 ### Security & Best Practices
-
+- Security groups, IAM roles, Bastion Host, and VPC endpoint ensure secure access.
+- Terraform backend with S3 and DynamoDB provides consistent state management.
 - IAM roles and policies strictly control access to AWS services.
 - Security groups and subnets provide network isolation.
-- Sensitive data is managed using environment variables and AWS Secrets Manager.
+- Sensitive data is managed using environment variables in Jenkins and a tfvars file in Terraform.
 - The entire infrastructure is defined as code using Terraform for easy, consistent, and repeatable deployments.
 - Regular commits to GitHub with documented changes for version control.
 - Monitoring and alerts set up to promptly address any issues.
 
-## Installation & Usage
-
-### Prerequisites
-
-- AWS Account and CLI configured.
-- Terraform and Docker installed.
-- Access to Jenkins (either local or hosted).
-
-### Steps
-
-1. **Clone the repository**: Access all Terraform and application code.
-2. **Terraform Initialization**: Run `terraform init` to prepare your working directory.
-3. **Terraform Plan & Apply**: Execute `terraform plan` and `terraform apply` to launch resources.
-4. **Docker Build**: Build Docker images for Python applications.
-5. **Jenkins Configuration**: Set up pipelines using `Jenkinsfile` in the repository.
-6. **Monitor and Maintain**: Regularly check system performance, logs, and AWS billing.
-
-## Deliverables
-
-- Terraform configuration files for AWS setup.
-- Python scripts for data processing with unit tests.
-- Dockerfiles for Python application and Jenkins.
-- Jenkins pipeline configurations (`Jenkinsfile`).
-- Optional web application code and Dockerfile.
-- Comprehensive documentation for setup and operation.
-
-## Additional Notes
-
-- Commit changes regularly to GitHub for version control.
-- Test locally before pushing to production.
-- Monitor AWS Free Tier limits to avoid unexpected charges.
-- Secure sensitive information and regularly review IAM permissions.
-
 ## Conclusion
-
 This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
-# WeatherApp
-Automated Weather Data Processing and Analytics Platform with CI/CD on AWS
 
+![Jenkins Pipeline Success](/Images/JenkinsPipelineSuccess.jpg)
+*Jenkins pipeline after successful execution using BlueOcean.*
 
+![Database after Initialization](/Images/DBafterInitialization.jpg)
+*View of the database after running the initialization script.*
 
+![Database after Mock Data Being Processed](/Images/DBafterMockDataBeingProcessed.jpg)
+*View of the weather data in the database after processing mock data.*
 
-Jenkins Pipeline and README.md still in progress
