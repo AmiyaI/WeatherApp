@@ -13,44 +13,21 @@ WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for 
 - **Jenkinsfile**: Configuration for the CI/CD pipeline.
 
 ## Key Components
-### AWS Lambda Functions
-Processes weather data and initializes the database schema.
+- **AWS Lambda Functions**: Processes weather data and initializes the database schema.
+- **EC2 Instances**:
+  - **Jenkins Server**: Manages CI/CD pipeline for Dockerized Python Lambda functions.
+  - **Bastion Host**: Provides secure access to RDS and other AWS resources.
+- **Amazon RDS**: PostgreSQL database for storing processed weather data.
+- **Amazon S3**: Bucket for weather data and Terraform state files.
+- **DynamoDB**: Table for managing Terraform state locks.
+- **IAM Roles and Policies**: Define permissions for secure operations of AWS services.
+- **VPC Configuration**: Setup with public and private subnets, internet gateway, route tables, security groups, and a VPC endpoint for S3.
+- **AWS Lambda Configuration**: Terraform setup for Lambda functions.
+- **ECR Repository**: Stores Docker images for Lambda functions.
+- **Jenkins Pipeline**: Automates testing, building Docker images, and deploying infrastructure.
+- **Unit Testing**: Ensures functionality and reliability of Lambda functions.
 
-### Terraform Infrastructure
-#### EC2 Instances
-- **Jenkins Server**: Manages CI/CD pipeline for Dockerized Python Lambda functions.
-- **Bastion Host**: Provides secure access to RDS and other AWS resources.
-
-#### Amazon RDS
-PostgreSQL database for storing processed weather data.
-
-#### Amazon S3
-Bucket for weather data and Terraform state files.
-
-#### DynamoDB
-Table for managing Terraform state locks.
-
-#### IAM Roles and Policies
-Define permissions for secure operations of AWS services.
-
-#### VPC Configuration
-- **Public Subnets**: Hosts Jenkins Server and Bastion Host.
-- **Private Subnets**: Hosts RDS database and Lambda functions.
-- Includes internet gateway, route tables, security groups, and a VPC endpoint for S3.
-
-#### AWS Lambda Configuration
-Terraform setup for Lambda functions.
-
-#### ECR Repository
-Stores Docker images for Lambda functions.
-
-### Jenkins Pipeline
-Automates testing, building Docker images, and deploying infrastructure.
-
-### Unit Testing
-Ensures functionality and reliability of Lambda functions.
-
-### Security & Best Practices
+## Security & Best Practices
 - Security groups, IAM roles, Bastion Host, and VPC endpoint ensure secure access.
 - Terraform backend with S3 and DynamoDB provides consistent state management.
 - IAM roles and policies strictly control access to AWS services.
@@ -63,12 +40,14 @@ Ensures functionality and reliability of Lambda functions.
 ## Conclusion
 This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
 
+## Images
+Below are images demonstrating various stages of the WeatherApp pipeline and database:
+
 ![Jenkins Pipeline Success](/Images/JenkinsPipelineSuccess.jpg)
-*Jenkins pipeline after successful execution using BlueOcean.*
+*The Jenkins pipeline interface after a successful execution using BlueOcean, illustrating the completed CI/CD process.*
 
 ![Database after Initialization](/Images/DBafterInitialization.jpg)
-*View of the database after running the initialization script.*
+*The PostgreSQL database view immediately after the schema initialization, ready to store weather data.*
 
 ![Database after Mock Data Being Processed](/Images/DBafterMockDataBeingProcessed.jpg)
-*View of the weather data in the database after processing mock data.*
-
+*The database showing weather data records following the processing of mock data by the Lambda functions.*
