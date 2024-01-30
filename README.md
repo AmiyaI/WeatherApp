@@ -44,10 +44,13 @@ This project showcases comprehensive cloud engineering skills, including AWS ser
 Below are images demonstrating various stages of the WeatherApp pipeline and database:
 
 ![Jenkins Pipeline Success](/Images/JenkinsPipelineSuccess.jpg)
-*The Jenkins pipeline interface after a successful execution using BlueOcean, illustrating the completed CI/CD process.*
+<br>
+**The Jenkins pipeline interface after a successful execution using BlueOcean, illustrating the completed CI/CD process.**
 
 ![Database after Initialization](/Images/DBafterInitialization.jpg)
-*The PostgreSQL database view immediately after the schema initialization, ready to store weather data.*
+<br>
+**The PostgreSQL database view immediately after the schema initialization, ready to store weather data.**
 
 ![Database after Mock Data Being Processed](/Images/DBafterMockDataBeingProcessed.jpg)
-*The database showing weather data records following the processing of mock data by the Lambda functions.*
+<br>
+**The database showing weather data records following the processing of mock data by the Lambda functions.**
