@@ -37,9 +37,6 @@ WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for 
 - Regular commits to GitHub with documented changes for version control.
 - Monitoring and alerts set up to promptly address any issues.
 
-## Conclusion
-This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
-
 ## Images
 Below are images demonstrating various stages of the WeatherApp pipeline and database:
 
@@ -54,3 +51,6 @@ Below are images demonstrating various stages of the WeatherApp pipeline and dat
 ![Database after Mock Data Being Processed](/Images/DBafterMockDataBeingProcessed.jpg)
 <br>
 **The database showing weather data records following the processing of mock data by the Lambda functions.**
+
+## Conclusion
+This project showcases comprehensive cloud engineering skills, including AWS service utilization, IaC, CI/CD processes, containerization, and adherence to security best practices. It demonstrates a real-world application of processing and analyzing weather data efficiently and effectively on the cloud.
