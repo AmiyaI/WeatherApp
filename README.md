@@ -31,10 +31,22 @@ WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for 
 - **Unit Testing**: Ensures functionality and reliability of Lambda functions.
 
 ## How It Works
-Weather data uploaded to S3 triggers the `s3dataingest` Lambda function for processing. The processed data is then stored in the RDS database for analysis. The Jenkins pipeline automates testing, building Docker images, and deploying infrastructure using Terraform. Secure access to the RDS database and other AWS resources is provided through the Bastion Host, with a VPC endpoint enabling private connections to S3 from within the VPC. DynamoDB ensures consistent Terraform state management across deployments.
+- Weather data uploaded to S3 triggers the `s3dataingest` Lambda function for processing.
+- The processed data is then stored in the RDS database for analysis.
+- The Jenkins pipeline automates testing, building Docker images, and deploying infrastructure using Terraform.
+- Secure access to the RDS database and other AWS resources is provided through the Bastion Host.
+- A VPC endpoint enables private connections to S3 from within the VPC.
+- DynamoDB ensures consistent Terraform state management across deployments.
 
 ## Security & Best Practices
-Security groups, IAM roles, Bastion Host, and VPC endpoint ensure secure access. Terraform backend with S3 and DynamoDB provides consistent state management. IAM roles and policies strictly control access to AWS services. Security groups and subnets provide network isolation. Sensitive data is managed using environment variables in Jenkins and a tfvars file in Terraform. The entire infrastructure is defined as code using Terraform for easy, consistent, and repeatable deployments. Regular commits to GitHub with documented changes for version control. Monitoring and alerts set up to promptly address any issues.
+- Security groups, IAM roles, Bastion Host, and VPC endpoint ensure secure access.
+- Terraform backend with S3 and DynamoDB provides consistent state management.
+- IAM roles and policies strictly control access to AWS services.
+- Security groups and subnets provide network isolation.
+- Sensitive data is managed using environment variables in Jenkins and a tfvars file in Terraform.
+- The entire infrastructure is defined as code using Terraform for easy, consistent, and repeatable deployments.
+- Regular commits to GitHub with documented changes for version control.
+- Monitoring and alerts set up to promptly address any issues.
 
 ## Images
 Below are images demonstrating various stages of the WeatherApp pipeline and database:
