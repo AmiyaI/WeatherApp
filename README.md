@@ -1,7 +1,7 @@
 # WeatherApp
 
 ## Overview
-WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for collecting, processing, storing, and managing weather data. Leveraging AWS services and Terraform for infrastructure deployment, it features AWS Lambda for data processing, Amazon RDS for database storage, and an EC2 instance for CI/CD processes and secure access to the RDS database and other VPC resources.
+WeatherApp is an AWS-based ETL (Extract, Transform, Load) pipeline designed for collecting, processing, storing, and managing weather data. Leveraging AWS services and Terraform for infrastructure deployment, it features AWS Lambda for data processing, Amazon RDS for database storage, and EC2 instances for CI/CD processes and secure access to the RDS database and other VPC resources.
 
 ## Project Structure
 - **Lambda Functions**: Dockerized Python Lambda functions for processing weather data.
